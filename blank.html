@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -17,7 +16,6 @@
         margin: 5px;
         padding: 5px;
     }
-    asdfasffasadsfasfasdgadsg
     
     #floating-panel {
         position: absolute;
@@ -66,9 +64,16 @@
     <script>
     var startValue = "";
     var endValue = "";
-var directionsDisplay = "";
-var directionsService = "";
-    function initMap() {
+    var directionsDisplay = "";
+    var directionsService = "";
+
+
+
+   
+
+   
+
+        function initMap() {
         directionsService = new google.maps.DirectionsService;
         directionsDisplay = new google.maps.DirectionsRenderer;
         var map = new google.maps.Map($('#map')[0], {
@@ -87,10 +92,13 @@ var directionsService = "";
         endValue = $("#end").val();
         console.log(endValue);
 
-       calculateAndDisplayRoute(directionsService, directionsDisplay);
+
 
 
     }
+     $("#getDirections").on("click", function () {
+       calculateAndDisplayRoute(directionsService, directionsDisplay);
+     });
 
 
     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
@@ -108,6 +116,7 @@ var directionsService = "";
             }
         });
     }
+
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJBKqmHFJ_X-wOXl3UBg46WgUwqzGDEHY
         &callback=initMap">
