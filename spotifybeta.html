@@ -8,15 +8,14 @@
 
 <body>
     <!-- Artist Select Box -->
-    
-        <!-- Label for Text Box -->
-        <label for="artist-input">Choose Your Artist</label>
-        <!-- Text Input Box -->
-        <input type="text" id="artist-input">
-        <br>
-        <!-- Submit Button -->
-        <button id="selectArtist">GO!</button>
-    
+    <!-- Label for Text Box -->
+    <label for="artist-input">Choose Your Artist</label>
+    <!-- Text Input Box -->
+    <input type="text" id="artist-input">
+    <br>
+    <!-- Submit Button -->
+    <button id="selectArtist">GO!</button>
+    <div id="tracklist"></div>
     <div id="nowplaying"></div>
     <iframe src="" width="300" height="380" controls frameborder="0" allowtransparency="true"></iframe>
 </body>
@@ -31,7 +30,18 @@ var totalNumberOfTimes = 0;
 var numberOfTracksPerArtist = 0;
 // array to store uri to fetch each song from spotify
 var uriArray = [];
+var artistArray = [];
+var trackNameArray = [];
 var j = 0;
+
+//constructor trackdata object
+function trackdata (uri, songtitle, artist) {
+	this.uri = uri,
+	this.songtitle = songtitle,
+	this.artist = artist
+}
+
+
 
 var tripLength = 7200000; // in milliseconds this is a 4 hour trip
 var songLengthTotal = 0;
@@ -124,26 +134,30 @@ function checkIfDone() {
         console.log(listOfTracks[0].uri);
 
         for (var i = 0; i < listOfTracks.length; i++) {
-            uriArray.push(listOfTracks[i].uri);
-            // console.log("uri array= " +uriArray);
-        }
+        	var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name);
 
+            uriArray.push(trackDatavar);
+            console.log(uriArray);
+            // artistArray.push(listOfTracks[i].artists[0].name);
+            // trackNameArray.push(listOfTracks[i].name)
+
+        }
+        console.log(uriArray);
+        
         beginSpotifyPlaying();
     }
 }
 
 function beginSpotifyPlaying() {
-
+    // do...while loop inserts iframes into DOM until the tracklist roughly equals the trip duration
     do {
-    	
-        firstSRC = uriArray[j];
-        console.log(uriArray);
-        console.log(firstSRC);
+
+        firstSRC = uriArray[j].uri;
+
+      
         durationOfFirstTrack = parseInt(listOfTracks[j].duration_ms);
-        console.log(durationOfFirstTrack);
-        console.log(durationOfFirstTrack + 2);
         songLengthTotal = songLengthTotal + durationOfFirstTrack;
-        console.log(songLengthTotal);
+        
         var currentFrame = $("<iframe>");
         currentFrame.attr({
             width: "500px",
@@ -151,15 +165,11 @@ function beginSpotifyPlaying() {
             src: "https://embed.spotify.com/?uri=" + firstSRC
         })
         $("#nowplaying").append(currentFrame);
+        // $("#tracklist").append(currentFrame);
         j++;
-        console.log(songLengthTotal);
+        
     }
     while (songLengthTotal < tripLength);
-
-    //// TODO NEXT -> CREATE PLAYLIST AND PLAY IN SPOTIFY
-
-    ///// OR USE THE DURATION TO KNOW WHEN TO POPULATE NEXT SRC INTO IFRAME.
-
 
 }
 </script>
