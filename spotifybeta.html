@@ -5,19 +5,18 @@
     <meta charset="UTF-8">
     <title>Spotify Player</title>
     <style>
-    #tracklist{
-    	float: right;
-    	border: 2px solid black;
-    	width: 300px;
-    	height: 600px;
-    	margin-right: 10px;
-    	font-size: 12px;
-    	padding: 5px;
-
+    #tracklist {
+        float: right;
+        border: 2px solid black;
+        width: 300px;
+        height: 600px;
+        margin-right: 10px;
+        font-size: 12px;
+        padding: 5px;
     }
-
-    .displaytrack{
-    	margin: 0px;
+    
+    .displaytrack {
+        margin: 0px;
     }
     </style>
 </head>
@@ -31,7 +30,8 @@
     <br>
     <!-- Submit Button -->
     <button id="selectArtist">GO!</button>
-    <div id="tracklist"></div>
+    <div id="tracklist">
+        <h4> TRACKLIST </h4></div>
     <div id="nowplaying"></div>
     <iframe src="" width="300" height="380" controls frameborder="0" allowtransparency="true"></iframe>
 </body>
@@ -50,10 +50,12 @@ var myTrackDataArray = [];
 var j = 0;
 
 //constructor trackdata object
-function trackdata(uri, songtitle, artist) {
+function trackdata(uri, songtitle, artist, songlength) {
     this.uri = uri,
-        this.songtitle = songtitle,
-        this.artist = artist
+    this.songtitle = songtitle,
+    this.artist = artist,
+    this.songlength = songlength
+
 }
 
 
@@ -149,12 +151,9 @@ function checkIfDone() {
         console.log(listOfTracks[0].uri);
 
         for (var i = 0; i < listOfTracks.length; i++) {
-            var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name);
+            var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name, Math.floor(listOfTracks[i].duration_ms / 1000));
 
             myTrackDataArray.push(trackDatavar);
-
-            // artistArray.push(listOfTracks[i].artists[0].name);
-            // trackNameArray.push(listOfTracks[i].name)
 
         }
         console.log(myTrackDataArray);
@@ -167,24 +166,33 @@ function beginSpotifyPlaying() {
     // do...while loop inserts iframes into DOM until the tracklist equals the trip duration
     do {
 
-        firstSRC = myTrackDataArray[j].uri;
 
+// implement a conversion from seconds to minutes
 
         durationOfFirstTrack = parseInt(listOfTracks[j].duration_ms);
         songLengthTotal = songLengthTotal + durationOfFirstTrack;
 
+
+
+        $("#tracklist").append("<p class='displaytrack' data-value='" + j + "'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + " " + myTrackDataArray[j].songlength + "</span></p>");
+        j++;
+
+    }
+    while (songLengthTotal < tripLength);
+
+    $("#tracklist").on("click", ".displaytrack", function() {
+        trackdatavalue = $(this).attr("data-value");
+        firstSRC = myTrackDataArray[trackdatavalue].uri;
         var currentFrame = $("<iframe>");
         currentFrame.attr({
             width: "500px",
             height: "100px",
             src: "https://embed.spotify.com/?uri=" + firstSRC
         })
-        $("#nowplaying").append(currentFrame);
-        $("#tracklist").append("<p class='displaytrack'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + "</span></p>");
-        j++;
 
-    }
-    while (songLengthTotal < tripLength);
+        $("#nowplaying").html(currentFrame);
+
+    });
 
 }
 </script>
