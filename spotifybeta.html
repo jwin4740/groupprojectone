@@ -4,6 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Spotify Player</title>
+    <style>
+    #tracklist{
+    	float: right;
+    	border: 2px solid black;
+    	width: 300px;
+    	height: 600px;
+    	margin-right: 10px;
+    	font-size: 12px;
+    	padding: 5px;
+
+    }
+
+    .displaytrack{
+    	margin: 0px;
+    }
+    </style>
 </head>
 
 <body>
@@ -29,16 +45,15 @@ var numberOfArtists = 0;
 var totalNumberOfTimes = 0;
 var numberOfTracksPerArtist = 0;
 // array to store uri to fetch each song from spotify
-var uriArray = [];
-var artistArray = [];
-var trackNameArray = [];
+var myTrackDataArray = [];
+
 var j = 0;
 
 //constructor trackdata object
-function trackdata (uri, songtitle, artist) {
-	this.uri = uri,
-	this.songtitle = songtitle,
-	this.artist = artist
+function trackdata(uri, songtitle, artist) {
+    this.uri = uri,
+        this.songtitle = songtitle,
+        this.artist = artist
 }
 
 
@@ -134,30 +149,30 @@ function checkIfDone() {
         console.log(listOfTracks[0].uri);
 
         for (var i = 0; i < listOfTracks.length; i++) {
-        	var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name);
+            var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name);
 
-            uriArray.push(trackDatavar);
-            console.log(uriArray);
+            myTrackDataArray.push(trackDatavar);
+
             // artistArray.push(listOfTracks[i].artists[0].name);
             // trackNameArray.push(listOfTracks[i].name)
 
         }
-        console.log(uriArray);
-        
+        console.log(myTrackDataArray);
+
         beginSpotifyPlaying();
     }
 }
 
 function beginSpotifyPlaying() {
-    // do...while loop inserts iframes into DOM until the tracklist roughly equals the trip duration
+    // do...while loop inserts iframes into DOM until the tracklist equals the trip duration
     do {
 
-        firstSRC = uriArray[j].uri;
+        firstSRC = myTrackDataArray[j].uri;
 
-      
+
         durationOfFirstTrack = parseInt(listOfTracks[j].duration_ms);
         songLengthTotal = songLengthTotal + durationOfFirstTrack;
-        
+
         var currentFrame = $("<iframe>");
         currentFrame.attr({
             width: "500px",
@@ -165,9 +180,9 @@ function beginSpotifyPlaying() {
             src: "https://embed.spotify.com/?uri=" + firstSRC
         })
         $("#nowplaying").append(currentFrame);
-        // $("#tracklist").append(currentFrame);
+        $("#tracklist").append("<p class='displaytrack'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + "</span></p>");
         j++;
-        
+
     }
     while (songLengthTotal < tripLength);
 
