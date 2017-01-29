@@ -208,13 +208,52 @@ function beginSpotifyPlaying() {
 
 
         // implement a conversion from seconds to minutes
-
+        var numMinutes = 0;
         durationOfFirstTrack = parseInt(listOfTracks[j].duration_ms);
         songLengthTotal = songLengthTotal + durationOfFirstTrack;
+        var numSeconds = myTrackDataArray[j].songlength;
+        console
+        do {
+            numSeconds = numSeconds - 60;
+            numMinutes++;
+        }
+        while (numSeconds > 59);
+        console.log(numMinutes);
+        console.log(numSeconds);
+        if (numSeconds === 1) {
+            numSeconds = "01";
+        }
+        if (numSeconds === 2) {
+            numSeconds = "02";
+        }
+        if (numSeconds === 3) {
+            numSeconds = "03";
+        }
+        if (numSeconds === 4) {
+            numSeconds = "04";
+        }
+        if (numSeconds === 5) {
+            numSeconds = "05";
+        }
+        if (numSeconds === 6) {
+            numSeconds = "06";
+        }
 
+        if (numSeconds === 7) {
+            numSeconds = "07";
+        }
 
+        if (numSeconds === 8) {
+            numSeconds = "08";
+        }
+        if (numSeconds === 9) {
+            numSeconds = "09";
+        }
+        if (numSeconds === 0) {
+            numSeconds = "00";
+        }
 
-        $("#tracklist").append("<p class='displaytrack' data-value='" + j + "'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + " " + myTrackDataArray[j].songlength + "</span></p>");
+        $("#tracklist").append("<p class='displaytrack' data-value='" + j + "'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + " (" + numMinutes + ":" + numSeconds + ")</span></p>");
         j++;
 
     }
