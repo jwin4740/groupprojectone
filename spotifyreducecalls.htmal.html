@@ -5,14 +5,25 @@
     <meta charset="UTF-8">
     <title>Spotify Player</title>
     <style>
-    #tracklist {
+    #tracklistcontainer {
         float: right;
         border: 2px solid black;
-        width: 300px;
-        height: 600px;
+        width: 320px;
+        height: 590px;
         margin-right: 10px;
+        padding: 5px;
+    }
+    
+    #tracklist {
+        border: 2px solid black;
+        width: 300px;
+        height: 545px;
         font-size: 12px;
         padding: 5px;
+    }
+    
+    h4 {
+        margin: 0px;
     }
     
     .displaytrack {
@@ -31,8 +42,12 @@
     <br>
     <!-- Submit Button -->
     <button id="selectArtist">GO!</button>
-    <div id="tracklist">
-        <h4> TRACKLIST </h4></div>
+    <div id="tracklistcontainer">
+        <h4> TRACKLIST </h4>
+        <div id="tracklist">
+        </div>
+        <h4 id="playlistlength"> TOTAL LENGTH: </h4>
+    </div>
     <div id="nowplaying"></div>
     <iframe src="" width="300" height="380" controls frameborder="0" allowtransparency="true"></iframe>
 </body>
@@ -52,20 +67,21 @@ var numberOfTracksPerArtist = 0;
 // array to store uri to fetch each song from spotify
 var myTrackDataArray = [];
 
+
 var j = 0;
 
 //constructor trackdata object
 function trackdata(uri, songtitle, artist, songlength) {
     this.uri = uri,
-    this.songtitle = songtitle,
-    this.artist = artist,
-    this.songlength = songlength
+        this.songtitle = songtitle,
+        this.artist = artist,
+        this.songlength = songlength
 
 }
 
 
 
-var tripLength = 7200000; // in milliseconds this is a 4 hour trip
+var tripLength = 3600000; // in milliseconds this is a 1 hour trip
 var songLengthTotal = 0;
 
 // On Button Click for Artist Selection
@@ -105,16 +121,17 @@ function getArtistTrack(artist) {
             //// AJAX THAT LOOPS THROUGH ARTISTS ARRAY TO GET 10 TRACKS PER ARTIST IN ARTISTS ARRAY
 
             // console.log(response);
-            numberOfArtists = response.artists.length;
-            // console.log("numberOfArtists " +numberOfArtists);
+            numberOfArtists = response.artists.length; // changed numOfArtists to 3 to limit ajax calls
+            console.log(numberOfArtists);
+
 
             /// LOOPING THROUGH RELATED ARTISTS 'response' TO PUSH 'id' TO 'artists[]' ARRAY
-            for (var i = 0; i < response.artists.length; i++) {
+            for (var i = 0; i < numberOfArtists; i++) {
                 // console.log(response.artists[i].id);
                 artists.push(response.artists[i].id);
             }
             // console.log(artists.toString());
-            totalNumberOfTimes = numberOfArtists * 10;
+            totalNumberOfTimes = numberOfArtists * 10; // required to check if ajax calls are done
             console.log(totalNumberOfTimes);
             //// LOOP THROUGH EACH ARTIST IN 'artists[]' TO GET 'tracks[]' VIA AJAX CALL 
             for (var i = 0; i < artists.length; i++) {
@@ -123,6 +140,8 @@ function getArtistTrack(artist) {
                     method: "GET"
 
                 }).done(function(response) {
+                    console.log(response);
+                    console.log(artists.length);
 
                     // numberOfTracksPerArtist = response.tracks.length;
                     // console.log("numberOfTracksPerArtist " + numberOfTracksPerArtist);
@@ -130,8 +149,11 @@ function getArtistTrack(artist) {
                     // console.log("Total number of times = " + numberOfTracksPerArtist * numberOfArtists);
 
                     /// WHEN DONE, LOOP THROUGH 'track[]' ARRAY TO GET EACH 'track' AND PUSH TO 'listOfTracks[]'
+
+                    //response.tracks.length is 10
                     for (var i = 0; i < response.tracks.length; i++) {
                         listOfTracks.push(response.tracks[i]);
+
                         checkIfDone();
                     }
                     // console.log("Track array for current artist" + listOfTracks);
@@ -150,6 +172,7 @@ function getArtistTrack(artist) {
 
 function checkIfDone() {
     --totalNumberOfTimes;
+    console.log(totalNumberOfTimes);
 
     if (totalNumberOfTimes == 0) {
         console.log(listOfTracks);
@@ -162,17 +185,29 @@ function checkIfDone() {
 
         }
         console.log(myTrackDataArray);
-
+        playlistShuffle();
         beginSpotifyPlaying();
     }
 }
+// shuffles the playlist
+function playlistShuffle() {
+    var j, k;
+    var temp;
+    for (j = 0; j < myTrackDataArray.length; j++) {
+        k = Math.floor(Math.random() * myTrackDataArray.length);
+        temp = myTrackDataArray[j];
+        myTrackDataArray[j] = myTrackDataArray[k];
+        myTrackDataArray[k] = temp;
+    }
+}
+
 
 function beginSpotifyPlaying() {
     // do...while loop inserts iframes into DOM until the tracklist equals the trip duration
     do {
 
 
-// implement a conversion from seconds to minutes
+        // implement a conversion from seconds to minutes
 
         durationOfFirstTrack = parseInt(listOfTracks[j].duration_ms);
         songLengthTotal = songLengthTotal + durationOfFirstTrack;
@@ -184,7 +219,7 @@ function beginSpotifyPlaying() {
 
     }
     while (songLengthTotal < tripLength);
-
+    $("#playlistlength").append((songLengthTotal / 1000) + " seconds");
     $("#tracklist").on("click", ".displaytrack", function() {
         trackdatavalue = $(this).attr("data-value");
         firstSRC = myTrackDataArray[trackdatavalue].uri;
@@ -196,6 +231,7 @@ function beginSpotifyPlaying() {
         })
 
         $("#nowplaying").html(currentFrame);
+
 
     });
 
