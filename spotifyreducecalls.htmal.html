@@ -3,6 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <script src="https://www.gstatic.com/firebasejs/3.6.5/firebase.js"></script>
+    <!-- Compiled and minified CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css"> -->
     <title>Spotify Player</title>
     <style>
     #tracklistcontainer {
@@ -56,7 +59,8 @@
 var CLIENT_ID = "7626a5c491b046fea9af0307df562248";
 var CLIENT_SECRET = "93c675af1036436aa010a7e396d8da06";
 
-
+var clickCounter = 0;
+var totalSiteVisitors = 0;
 var artists = [];
 var shuffledTrackArray = [];
 var listOfTracks = [];
@@ -66,9 +70,17 @@ var totalNumberOfTimes = 0;
 var numberOfTracksPerArtist = 0;
 // array to store uri to fetch each song from spotify
 var myTrackDataArray = [];
-
-
 var j = 0;
+var config = {
+    apiKey: "AIzaSyBx2ZLAG5Y6NcPYpSIY-0HSLU5hUrrQ2Ww",
+    authDomain: "roadtripgmap.firebaseapp.com",
+    databaseURL: "https://roadtripgmap.firebaseio.com",
+    storageBucket: "roadtripgmap.appspot.com",
+    messagingSenderId: "787842381953"
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+
 
 //constructor trackdata object
 function trackdata(uri, songtitle, artist, songlength) {
@@ -78,6 +90,49 @@ function trackdata(uri, songtitle, artist, songlength) {
         this.songlength = songlength
 
 }
+
+var connectionsRef = database.ref("/connections");
+var connectedRef = database.ref(".info/connected");
+
+
+
+database.ref("/logins").set({
+    views : clickCounter
+})
+
+connectedRef.on("value", function(someoneNew) {
+    if (someoneNew.val()) {
+        var con = connectionsRef.push(true);
+        con.onDisconnect().remove();
+    }
+});
+
+
+// At the initial load, get a snapshot of the current data.
+database.ref("/logins").on("value", function(snapshot) {
+     clickCounter = snapshot.val().views;
+    clickCounter++;
+
+    // Print the initial data to the console.
+    console.log(snapshot.val());
+
+    // Change the html to reflect the initial value.
+   
+
+    // Change the clickcounter to match the data in the database
+   
+
+    // Log the value of the clickCounter
+    console.log(clickCounter);
+    database.ref("/logins").set({
+        views: clickCounter
+    });
+
+
+    // If any errors are experienced, log them to console.
+}, function(errorObject) {
+    console.log("The read failed: " + errorObject.code);
+});
 
 
 
@@ -117,19 +172,23 @@ function getArtistTrack(artist) {
             url: "https://api.spotify.com/v1/artists/" + artistID + "/related-artists",
             method: 'GET'
         }).done(function(response) {
+            console.log(artist);
+            console.log(artistID);
 
             //// AJAX THAT LOOPS THROUGH ARTISTS ARRAY TO GET 10 TRACKS PER ARTIST IN ARTISTS ARRAY
 
             // console.log(response);
-            numberOfArtists = response.artists.length; // changed numOfArtists to 3 to limit ajax calls
+            numberOfArtists = response.artists.length - 5; // changed numOfArtists to 15 to limit ajax calls
             console.log(numberOfArtists);
 
 
             /// LOOPING THROUGH RELATED ARTISTS 'response' TO PUSH 'id' TO 'artists[]' ARRAY
+            artists.push(artistID);
             for (var i = 0; i < numberOfArtists; i++) {
                 // console.log(response.artists[i].id);
                 artists.push(response.artists[i].id);
             }
+            console.log(artists);
             // console.log(artists.toString());
             totalNumberOfTimes = numberOfArtists * 10; // required to check if ajax calls are done
             console.log(totalNumberOfTimes);
@@ -172,7 +231,7 @@ function getArtistTrack(artist) {
 
 function checkIfDone() {
     --totalNumberOfTimes;
-    console.log(totalNumberOfTimes);
+
 
     if (totalNumberOfTimes == 0) {
         console.log(listOfTracks);
