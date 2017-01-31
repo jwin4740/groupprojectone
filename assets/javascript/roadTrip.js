@@ -1,3 +1,4 @@
+<<<<<<< HEAD:assets/javascript/roadTrip.js
 var config = {
 apiKey: "AIzaSyA-d6axn-Er0ahgB4ZyebypjmVT7eXkcyU",
 authDomain: "roadtrip-app-529d8.firebaseapp.com",
@@ -16,6 +17,71 @@ var directionsDisplay = "";
 var directionsService = "";
 var CLIENT_ID = "7626a5c491b046fea9af0307df562248";
 var CLIENT_SECRET = "93c675af1036436aa010a7e396d8da06";
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://www.gstatic.com/firebasejs/3.6.5/firebase.js"></script>
+    <!-- Compiled and minified CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css"> -->
+    <title>Spotify Player</title>
+    <style>
+    #tracklistcontainer {
+        float: right;
+        border: 2px solid black;
+        width: 320px;
+        height: 590px;
+        margin-right: 10px;
+        padding: 5px;
+    }
+    
+    #tracklist {
+        border: 2px solid black;
+        width: 300px;
+        height: 545px;
+        font-size: 12px;
+        padding: 5px;
+    }
+    
+    h4 {
+        margin: 0px;
+    }
+    
+    .displaytrack {
+        margin: 0px;
+        cursor: pointer;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Artist Select Box -->
+    <!-- Label for Text Box -->
+    <label for="artist-input">Choose Your Artist</label>
+    <!-- Text Input Box -->
+    <input type="text" id="artist-input">
+    <br>
+    <!-- Submit Button -->
+    <button id="selectArtist">GO!</button>
+    <div id="tracklistcontainer">
+        <h4> TRACKLIST </h4>
+        <div id="tracklist">
+        </div>
+        <h4 id="playlistlength"> TOTAL LENGTH: </h4>
+    </div>
+    <div id="nowplaying"></div>
+    <iframe src="" width="300" height="380" controls frameborder="0" allowtransparency="true"></iframe>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+var CLIENT_ID = "7626a5c491b046fea9af0307df562248";
+var CLIENT_SECRET = "93c675af1036436aa010a7e396d8da06";
+
+var clickCounter = 0;
+var totalSiteVisitors = 0;
+>>>>>>> front-end:spotifyreducecalls.htmal.html
 var artists = [];
 var shuffledTrackArray = [];
 var listOfTracks = [];
@@ -26,6 +92,7 @@ var numberOfTracksPerArtist = 0;
 // array to store uri to fetch each song from spotify
 var myTrackDataArray = [];
 var j = 0;
+<<<<<<< HEAD:assets/javascript/roadTrip.js
 var tripLength = 0; // in milliseconds this is a 1 hour trip
 var songLengthTotal = 0;
 
@@ -79,12 +146,67 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, distance
     }, function(response, status) {
         console.log(response);
         var length = (response.rows[0].elements[0].duration.value);
+=======
+var config = {
+    apiKey: "AIzaSyBx2ZLAG5Y6NcPYpSIY-0HSLU5hUrrQ2Ww",
+    authDomain: "roadtripgmap.firebaseapp.com",
+    databaseURL: "https://roadtripgmap.firebaseio.com",
+    storageBucket: "roadtripgmap.appspot.com",
+    messagingSenderId: "787842381953"
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+
+>>>>>>> front-end:spotifyreducecalls.htmal.html
 
         tripLength = length * 1000;
         console.log(response.rows[0].elements[0].duration.text);
         console.log(msLength);
 
     });
+
+var connectionsRef = database.ref("/connections");
+var connectedRef = database.ref(".info/connected");
+
+
+
+database.ref("/logins").set({
+    views : clickCounter
+})
+
+connectedRef.on("value", function(someoneNew) {
+    if (someoneNew.val()) {
+        var con = connectionsRef.push(true);
+        con.onDisconnect().remove();
+    }
+});
+
+
+// At the initial load, get a snapshot of the current data.
+database.ref("/logins").on("value", function(snapshot) {
+     clickCounter = snapshot.val().views;
+    clickCounter++;
+
+    // Print the initial data to the console.
+    console.log(snapshot.val());
+
+    // Change the html to reflect the initial value.
+   
+
+    // Change the clickcounter to match the data in the database
+   
+
+    // Log the value of the clickCounter
+    console.log(clickCounter);
+    database.ref("/logins").set({
+        views: clickCounter
+    });
+
+
+    // If any errors are experienced, log them to console.
+}, function(errorObject) {
+    console.log("The read failed: " + errorObject.code);
+});
 
 
 } // End of function to calculate directions and distance
@@ -134,13 +256,33 @@ function getArtistTrack(artist) {
             url: "https://api.spotify.com/v1/artists/" + artistID + "/related-artists",
             method: 'GET'
         }).done(function(response) {
+<<<<<<< HEAD:assets/javascript/roadTrip.js
             // Loop through related artists' array and gets 10 tracks per artist
             numberOfArtists = response.artists.length;
             artists.push(artistID);
             // Looping through response received to push each related artist ID into artists array
+=======
+            console.log(artist);
+            console.log(artistID);
+
+            //// AJAX THAT LOOPS THROUGH ARTISTS ARRAY TO GET 10 TRACKS PER ARTIST IN ARTISTS ARRAY
+
+            // console.log(response);
+            numberOfArtists = response.artists.length - 5; // changed numOfArtists to 15 to limit ajax calls
+            console.log(numberOfArtists);
+
+
+            /// LOOPING THROUGH RELATED ARTISTS 'response' TO PUSH 'id' TO 'artists[]' ARRAY
+            artists.push(artistID);
+>>>>>>> front-end:spotifyreducecalls.htmal.html
             for (var i = 0; i < numberOfArtists; i++) {
                 artists.push(response.artists[i].id);
             }
+<<<<<<< HEAD:assets/javascript/roadTrip.js
+=======
+            console.log(artists);
+            // console.log(artists.toString());
+>>>>>>> front-end:spotifyreducecalls.htmal.html
             totalNumberOfTimes = numberOfArtists * 10; // required to check if ajax calls are done
             console.log(totalNumberOfTimes);
             // LOOP THROUGH EACH ARTIST IN 'artists[]' TO GET 'tracks[]' VIA AJAX CALL 
@@ -166,7 +308,12 @@ function getArtistTrack(artist) {
 // Function that checks if ajax calls are complete
 function checkIfDone() {
     --totalNumberOfTimes;
+<<<<<<< HEAD:assets/javascript/roadTrip.js
     console.log(totalNumberOfTimes);
+=======
+
+
+>>>>>>> front-end:spotifyreducecalls.htmal.html
     if (totalNumberOfTimes == 0) {
         // console.log(listOfTracks);
         // console.log(listOfTracks[0].uri);
