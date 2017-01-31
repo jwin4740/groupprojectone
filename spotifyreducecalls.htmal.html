@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://www.gstatic.com/firebasejs/3.6.5/firebase.js"></script>
+    <!-- Compiled and minified CSS -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css"> -->
+    <title>Spotify Player</title>
+    <style>
+    #tracklistcontainer {
+        float: right;
+        border: 2px solid black;
+        width: 320px;
+        height: 590px;
+        margin-right: 10px;
+        padding: 5px;
+    }
+    
+    #tracklist {
+        border: 2px solid black;
+        width: 300px;
+        height: 545px;
+        font-size: 12px;
+        padding: 5px;
+    }
+    
+    h4 {
+        margin: 0px;
+    }
+    
+    .displaytrack {
+        margin: 0px;
+        cursor: pointer;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Artist Select Box -->
+    <!-- Label for Text Box -->
+    <label for="artist-input">Choose Your Artist</label>
+    <!-- Text Input Box -->
+    <input type="text" id="artist-input">
+    <br>
+    <!-- Submit Button -->
+    <button id="selectArtist">GO!</button>
+    <div id="tracklistcontainer">
+        <h4> TRACKLIST </h4>
+        <div id="tracklist">
+        </div>
+        <h4 id="playlistlength"> TOTAL LENGTH: </h4>
+    </div>
+    <div id="nowplaying"></div>
+    <iframe src="" width="300" height="380" controls frameborder="0" allowtransparency="true"></iframe>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+var CLIENT_ID = "7626a5c491b046fea9af0307df562248";
+var CLIENT_SECRET = "93c675af1036436aa010a7e396d8da06";
+
+var clickCounter = 0;
+var totalSiteVisitors = 0;
+var artists = [];
+var shuffledTrackArray = [];
+var listOfTracks = [];
+var trackURI = "";
+var numberOfArtists = 0;
+var totalNumberOfTimes = 0;
+var numberOfTracksPerArtist = 0;
+// array to store uri to fetch each song from spotify
+var myTrackDataArray = [];
+var j = 0;
+var config = {
+    apiKey: "AIzaSyBx2ZLAG5Y6NcPYpSIY-0HSLU5hUrrQ2Ww",
+    authDomain: "roadtripgmap.firebaseapp.com",
+    databaseURL: "https://roadtripgmap.firebaseio.com",
+    storageBucket: "roadtripgmap.appspot.com",
+    messagingSenderId: "787842381953"
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+
+
+//constructor trackdata object
+function trackdata(uri, songtitle, artist, songlength) {
+    this.uri = uri,
+        this.songtitle = songtitle,
+        this.artist = artist,
+        this.songlength = songlength
+
+}
+
+var connectionsRef = database.ref("/connections");
+var connectedRef = database.ref(".info/connected");
+
+
+
+database.ref("/logins").set({
+    views : clickCounter
+})
+
+connectedRef.on("value", function(someoneNew) {
+    if (someoneNew.val()) {
+        var con = connectionsRef.push(true);
+        con.onDisconnect().remove();
+    }
+});
+
+
+// At the initial load, get a snapshot of the current data.
+database.ref("/logins").on("value", function(snapshot) {
+     clickCounter = snapshot.val().views;
+    clickCounter++;
+
+    // Print the initial data to the console.
+    console.log(snapshot.val());
+
+    // Change the html to reflect the initial value.
+   
+
+    // Change the clickcounter to match the data in the database
+   
+
+    // Log the value of the clickCounter
+    console.log(clickCounter);
+    database.ref("/logins").set({
+        views: clickCounter
+    });
+
+
+    // If any errors are experienced, log them to console.
+}, function(errorObject) {
+    console.log("The read failed: " + errorObject.code);
+});
+
+
+
+var tripLength = 3600000; // in milliseconds this is a 1 hour trip
+var songLengthTotal = 0;
+
+// On Button Click for Artist Selection
+$('#selectArtist').on('click', function() {
+
+    // Grab the Artist Name
+    var artist = $('#artist-input').val().trim();
+
+    // Run the Artist Player Function (Passing in the Artist as an Argument)
+    getArtistTrack(artist);
+
+
+    // Prevents moving to the next page
+    return false;
+});
+
+
+function getArtistTrack(artist) {
+    var artistID;
+
+    queryURL = "http://api.spotify.com/v1/search?q=" + artist + "&type=artist";
+    //// AJAX THAT GETS ARTIST ID
+    $.ajax({
+        url: queryURL,
+        method: 'GET',
+        crossDomain: true
+
+    }).done(function(response) {
+        artistID = response.artists.items[0].id;
+
+        //// AJAX THAT GETS RELATED ARTISTS TO ARTIST ID 
+        $.ajax({
+            url: "https://api.spotify.com/v1/artists/" + artistID + "/related-artists",
+            method: 'GET'
+        }).done(function(response) {
+            console.log(artist);
+            console.log(artistID);
+
+            //// AJAX THAT LOOPS THROUGH ARTISTS ARRAY TO GET 10 TRACKS PER ARTIST IN ARTISTS ARRAY
+
+            // console.log(response);
+            numberOfArtists = response.artists.length - 5; // changed numOfArtists to 15 to limit ajax calls
+            console.log(numberOfArtists);
+
+
+            /// LOOPING THROUGH RELATED ARTISTS 'response' TO PUSH 'id' TO 'artists[]' ARRAY
+            artists.push(artistID);
+            for (var i = 0; i < numberOfArtists; i++) {
+                // console.log(response.artists[i].id);
+                artists.push(response.artists[i].id);
+            }
+            console.log(artists);
+            // console.log(artists.toString());
+            totalNumberOfTimes = numberOfArtists * 10; // required to check if ajax calls are done
+            console.log(totalNumberOfTimes);
+            //// LOOP THROUGH EACH ARTIST IN 'artists[]' TO GET 'tracks[]' VIA AJAX CALL 
+            for (var i = 0; i < artists.length; i++) {
+                $.ajax({
+                    url: "https://api.spotify.com/v1/artists/" + artists[i] + "/top-tracks?country=SE",
+                    method: "GET"
+
+                }).done(function(response) {
+                    console.log(response);
+                    console.log(artists.length);
+
+                    // numberOfTracksPerArtist = response.tracks.length;
+                    // console.log("numberOfTracksPerArtist " + numberOfTracksPerArtist);
+                    // totalNumberOfTimes = numberOfTracksPerArtist * numberOfArtists;
+                    // console.log("Total number of times = " + numberOfTracksPerArtist * numberOfArtists);
+
+                    /// WHEN DONE, LOOP THROUGH 'track[]' ARRAY TO GET EACH 'track' AND PUSH TO 'listOfTracks[]'
+
+                    //response.tracks.length is 10
+                    for (var i = 0; i < response.tracks.length; i++) {
+                        listOfTracks.push(response.tracks[i]);
+
+                        checkIfDone();
+                    }
+                    // console.log("Track array for current artist" + listOfTracks);
+
+                });
+            }
+
+
+        });
+        // console.log(typeof(listOfTracks));
+
+    });
+    // console.log(listOfTracks);
+    // console.log(listOfTracks[0]);
+}
+
+function checkIfDone() {
+    --totalNumberOfTimes;
+
+
+    if (totalNumberOfTimes == 0) {
+        console.log(listOfTracks);
+        console.log(listOfTracks[0].uri);
+
+        for (var i = 0; i < listOfTracks.length; i++) {
+            var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name, Math.floor(listOfTracks[i].duration_ms / 1000));
+
+            myTrackDataArray.push(trackDatavar);
+
+        }
+        console.log(myTrackDataArray);
+        playlistShuffle();
+        beginSpotifyPlaying();
+    }
+}
+// shuffles the playlist
+function playlistShuffle() {
+    var j, k;
+    var temp;
+    for (j = 0; j < myTrackDataArray.length; j++) {
+        k = Math.floor(Math.random() * myTrackDataArray.length);
+        temp = myTrackDataArray[j];
+        myTrackDataArray[j] = myTrackDataArray[k];
+        myTrackDataArray[k] = temp;
+    }
+}
+
+
+function beginSpotifyPlaying() {
+    // do...while loop inserts iframes into DOM until the tracklist equals the trip duration
+    do {
+
+
+        // implement a conversion from seconds to minutes
+        var numMinutes = 0;
+        durationOfFirstTrack = parseInt(listOfTracks[j].duration_ms);
+        songLengthTotal = songLengthTotal + durationOfFirstTrack;
+        var numSeconds = myTrackDataArray[j].songlength;
+        console
+        do {
+            numSeconds = numSeconds - 60;
+            numMinutes++;
+        }
+        while (numSeconds > 59);
+        console.log(numMinutes);
+        console.log(numSeconds);
+        if (numSeconds === 1) {
+            numSeconds = "01";
+        }
+        if (numSeconds === 2) {
+            numSeconds = "02";
+        }
+        if (numSeconds === 3) {
+            numSeconds = "03";
+        }
+        if (numSeconds === 4) {
+            numSeconds = "04";
+        }
+        if (numSeconds === 5) {
+            numSeconds = "05";
+        }
+        if (numSeconds === 6) {
+            numSeconds = "06";
+        }
+
+        if (numSeconds === 7) {
+            numSeconds = "07";
+        }
+
+        if (numSeconds === 8) {
+            numSeconds = "08";
+        }
+        if (numSeconds === 9) {
+            numSeconds = "09";
+        }
+        if (numSeconds === 0) {
+            numSeconds = "00";
+        }
+
+        $("#tracklist").append("<p class='displaytrack' data-value='" + j + "'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + " (" + numMinutes + ":" + numSeconds + ")</span></p>");
+        j++;
+
+    }
+    while (songLengthTotal < tripLength);
+    $("#playlistlength").append((songLengthTotal / 1000) + " seconds");
+    $("#tracklist").on("click", ".displaytrack", function() {
+        trackdatavalue = $(this).attr("data-value");
+        firstSRC = myTrackDataArray[trackdatavalue].uri;
+        var currentFrame = $("<iframe>");
+        currentFrame.attr({
+            width: "500px",
+            height: "100px",
+            src: "https://embed.spotify.com/?uri=" + firstSRC
+        })
+
+        $("#nowplaying").html(currentFrame);
+
+
+    });
+
+}
+</script>
+
+</html>
