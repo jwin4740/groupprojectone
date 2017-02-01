@@ -1,9 +1,9 @@
 var config = {
-    apiKey: "AIzaSyA-d6axn-Er0ahgB4ZyebypjmVT7eXkcyU",
-    authDomain: "roadtrip-app-529d8.firebaseapp.com",
-    databaseURL: "https://roadtrip-app-529d8.firebaseio.com",
-    storageBucket: "roadtrip-app-529d8.appspot.com",
-    messagingSenderId: "74695053024"
+    apiKey: "AIzaSyAXt8VC_K0qy0I1esj1Fvg96bZo856bakQ",
+    authDomain: "roadtripapp-a18f6.firebaseapp.com",
+    databaseURL: "https://roadtripapp-a18f6.firebaseio.com",
+    storageBucket: "roadtripapp-a18f6.appspot.com",
+    messagingSenderId: "125448158208"
 };
 
 firebase.initializeApp(config);
@@ -28,7 +28,10 @@ var myTrackDataArray = [];
 var j = 0;
 var tripLength = 0; // in milliseconds this is a 1 hour trip
 var songLengthTotal = 0;
+// To store artist destination and timestamp for data analytics
+var analyticsData = {};
 
+// Trying to get the accordion to be collapsed on initial display ********** check this.
 $("#accordion").collapse("hide");
 
 // ******** Google maps API code ********
@@ -109,6 +112,16 @@ $('#myModal').on('shown.bs.modal', function() {
     $('#myInput').focus()
 })
 
+function pushToDBForAnalysis() {
+    analyticsData = {
+        artist: artist,
+        destination: endValue,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    }
+    // Pushing analyticsData to firebase as child of /analytics
+    database.ref().push(analyticsData);
+}
+
 
 // ********* Code for Spotify song playing ********
 
@@ -123,6 +136,8 @@ $('#selectArtist').on('click', function() {
     getArtistTrack(artist);
     // Letting user know
     $("#artist-input").val("You have been SoNgIfIeD!! Enjoy!");
+    // Function to push data for data analytics
+    pushToDBForAnalysis();
     // Prevents moving to the next page
     return false;
 });
@@ -193,7 +208,7 @@ function checkIfDone() {
             // Array of trackData objects
             myTrackDataArray.push(trackDatavar);
             // Pushing tracklist to firebase
-            database.ref("/tracklist").push(trackDatavar);
+            // database.ref("/tracklist").push(trackDatavar);
         }
         // console.log(myTrackDataArray);
         // Shuffling playlist
