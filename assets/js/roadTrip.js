@@ -21,6 +21,7 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+
 var startValue = "";
 var endValue = "";
 var directionsDisplay = "";
@@ -39,6 +40,8 @@ var songLengthMin = 0;
 var songLengthHour = 0;
 var firstLoginCount = 0;
 var loginCount;
+var trafficLayer;
+var map = "";
 
 // array to store uri to fetch each song from spotify
 var myTrackDataArray = [];
@@ -57,7 +60,8 @@ function initMap() {
     directionsService = new google.maps.DirectionsService;
     directionsDisplay = new google.maps.DirectionsRenderer;
     distance = new google.maps.DistanceMatrixService;
-    var map = new google.maps.Map($('#map')[0], {
+    trafficLayer = new google.maps.TrafficLayer();
+    map = new google.maps.Map($('#map')[0], {
         zoom: 7,
         center: {
             lat: 41.85,
@@ -78,6 +82,13 @@ function initMap() {
 
 } // End of google map display
 
+$('#toggletraffic').on("click", function() {
+    trafficLayer.setMap(map);
+});
+ 
+function displayDirectionsMap() {
+    directionsDisplay.setMap(map);
+}
 // Function to calculate route, display and make call to Google distanceMatrix to get duration of trip
 function calculateAndDisplayRoute(directionsService, directionsDisplay, distance) {
     directionsService.route({

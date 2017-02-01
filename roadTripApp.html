@@ -80,20 +80,27 @@
                 </div>
                 <div id="collapse1" class="panel-collapse collapse in">
                     <div class="panel-body">
-                    <div class="col-xs-12 col-sm-7">
-                        <div id="map"></div>
-                    </div>
-                     <div class="col-xs-12 col-sm-5">
-                         <div class="weather text-left">
-                            <span>Weather currently in <span id="destination"></span></span>
-                            <div class="weatherStats text-center">
-                                Max. Temperature: <p id="temperatureMax"></p>
-                                Min. Temperature: <p id="temperatureMin"></p>
-                                Weather conditions: <div id="typeOfWeather"></div>
-                                Humidity: <div id="humidity"></div>
+                        <div class="col-xs-12 col-sm-7">
+                            <input id="toggledirections" type="checkbox" name="vehicle" value="Directions" checked> Directions
+                            <br>
+                            <input id="toggletraffic" type="checkbox" name="vehicle" value="Traffic"> Traffic
+                            <div id="map"></div>
+                        </div>
+                        <div class="col-xs-12 col-sm-5">
+                            <div class="weather text-left">
+                                <span>Weather currently in <span id="destination"></span></span>
+                                <div class="weatherStats text-center">
+                                    Max. Temperature:
+                                    <p id="temperatureMax"></p>
+                                    Min. Temperature:
+                                    <p id="temperatureMin"></p>
+                                    Weather conditions:
+                                    <div id="typeOfWeather"></div>
+                                    Humidity:
+                                    <div id="humidity"></div>
+                                </div>
                             </div>
                         </div>
-                     </div>
                     </div>
                 </div>
             </div>
