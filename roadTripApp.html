@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -17,30 +17,29 @@
 </head>
 
 <body>
-    
-
     <div class="container text-center">
-<!--pop up to gather user's artist information-->     
-
-<!-- Modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <label class="modal-title" for="artist-input">Choose Your Artist</label>
-          </div>
-          <div class="modal-body">
-            <input type="text" id="artist-input">
-            <br>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="selectArtist">Save changes</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
+        <!--pop up to gather user's artist information-->
+        <!-- Modal -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <label class="modal-title" for="artist-input">Choose Your Artist</label>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="artist-input">
+                        <br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="selectArtist">Save changes</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
         <!--Header -->
         <div class="header">
             <h1>Welcome to the Spotify Road Trip App</h1>
@@ -64,6 +63,11 @@
             </div>
             <button class="btn btn-default submit">Submit</button>
         </form>
+        <div class="weather">
+            Weather currently in <span id="destination"></span>:
+            <p id="temperature"></p>
+            <div id="typeOfWeather"></div>
+        </div>
         <div class="row">
             <div id="tracklistcontainer" class="col-xs-4">
                 <h4> TRACKLIST </h4>
@@ -84,7 +88,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJBKqmHFJ_X-wOXl3UBg46WgUwqzGDEHY">
-
     </script>
     <script type="text/javascript" src="assets/js/roadTrip.js"></script>
     <script src="roadTrip.js"></script>

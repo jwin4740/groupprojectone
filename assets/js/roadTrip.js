@@ -1,9 +1,9 @@
 var config = {
-apiKey: "AIzaSyA-d6axn-Er0ahgB4ZyebypjmVT7eXkcyU",
-authDomain: "roadtrip-app-529d8.firebaseapp.com",
-databaseURL: "https://roadtrip-app-529d8.firebaseio.com",
-storageBucket: "roadtrip-app-529d8.appspot.com",
-messagingSenderId: "74695053024"
+    apiKey: "AIzaSyA-d6axn-Er0ahgB4ZyebypjmVT7eXkcyU",
+    authDomain: "roadtrip-app-529d8.firebaseapp.com",
+    databaseURL: "https://roadtrip-app-529d8.firebaseio.com",
+    storageBucket: "roadtrip-app-529d8.appspot.com",
+    messagingSenderId: "74695053024"
 };
 
 firebase.initializeApp(config);
@@ -68,7 +68,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, distance
             directionsDisplay.setDirections(response);
 
         } else {
-            window.alert('Directions request failed due to ' + status);
+            console.log("ERROR - " + status);
+            // window.alert('Directions request failed due to ' + status);
         }
     });
 
@@ -85,8 +86,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, distance
         console.log(msLength);
 
     });
-
-
+    // Get current weather there
+    getCurrentWeather();
 } // End of function to calculate directions and distance
 
 // Main Submit button get route info & modal button
@@ -97,8 +98,8 @@ $(".submit").on("click", function(e) {
     initMap();
 });
 
-$('#myModal').on('shown.bs.modal', function () {
- $('#myInput').focus()
+$('#myModal').on('shown.bs.modal', function() {
+    $('#myInput').focus()
 })
 
 
@@ -117,9 +118,9 @@ $('#selectArtist').on('click', function() {
 //constructor trackdata object
 function trackdata(uri, songtitle, artist, songlength) {
     this.uri = uri,
-    this.songtitle = songtitle,
-    this.artist = artist,
-    this.songlength = songlength
+        this.songtitle = songtitle,
+        this.artist = artist,
+        this.songlength = songlength
 }
 
 // Function to get a list of tracks of favorite artist and related artists 
@@ -161,7 +162,7 @@ function getArtistTrack(artist) {
                         listOfTracks.push(response.tracks[i]);
                         checkIfDone();
                     }
-                    
+
                 });
             }
         });
@@ -179,6 +180,7 @@ function checkIfDone() {
             var trackDatavar = new trackdata(listOfTracks[i].uri, listOfTracks[i].name, listOfTracks[i].artists[0].name, Math.floor(listOfTracks[i].duration_ms / 1000));
             // Array of trackData objects
             myTrackDataArray.push(trackDatavar);
+            // Pushing tracklist to firebase
             database.ref("/tracklist").push(trackDatavar);
         }
         // console.log(myTrackDataArray);
@@ -221,7 +223,7 @@ function beginSpotifyPlaying() {
         do {
             numSeconds = numSeconds - 60;
             numMinutes++;
-        }while (numSeconds > 59);
+        } while (numSeconds > 59);
 
         console.log(numMinutes);
         console.log(numSeconds);
@@ -262,7 +264,7 @@ function beginSpotifyPlaying() {
         // Incrementing iterator
         j++;
 
-    }while (songLengthTotal < tripLength);
+    } while (songLengthTotal < tripLength);
 
     // Trip length
     $("#playlistlength").append((songLengthTotal / 1000) + " seconds");
@@ -280,3 +282,31 @@ function beginSpotifyPlaying() {
         $("#nowplaying").html(currentFrame);
     });
 }
+
+// To collect weather data
+function getCurrentWeather() {
+    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q="+endValue+"&APPID=51d5a2e80db66d661e97694890b4fb97";
+
+    $.ajax({
+    url: queryURL,
+    method: 'GET'
+    }).done(function(response){
+        console.log(queryURL);
+        console.log(response);
+
+        $("#destination").html(endValue.toUpperCase());
+        $("#temperature").html("<img src='http://openweathermap.org/img/w/"+ response.weather[0].icon+".png'> "  + Math.round((response.main.temp - 273.15) * 1.80 + 32) + " F");
+        $("#typeOfWeather").html(response.weather[0].description);
+        
+    });
+
+}
+
+
+// PseudoCode ->
+// Pushed tracks in firebase db /tracklist
+// database.ref("/tracklist").limitToFirst(1).on("value").
+// loop through myTrackDataArray[]
+// get uri from db track -> display as iframe
+
+// database.ref("/tracklist")
