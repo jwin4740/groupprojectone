@@ -389,7 +389,7 @@ function updateLoginCount(loginCount) {
         views: loginCount
     });
     $("#logins").html(loginCount);
-    $("#").html(loginCount);
+    $("#yourTopArtists").html("Brad Paisley, Keith Urban, Chris Young, Miranda Lambert, Eric Elapton, Lynyrd Skynyrd");
 
 }
 var artCount = 0;
@@ -416,8 +416,6 @@ database.ref("/analyze").on("child_added", function(childsnapshot) {
         database.ref("/analyze/topartists").push({
             artist : analyticsArray[i],
             count : artCon.artCount
-
-
         })
         
     }
