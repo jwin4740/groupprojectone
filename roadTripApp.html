@@ -10,6 +10,10 @@
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <!--bootstrap-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Link to Moment.js should go here -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <!-- Font awesome cdn -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Firebase link -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
     <!-- CSS file link -->
@@ -28,11 +32,11 @@
                         <label class="modal-title" for="artist-input">Choose Your Artist</label>
                     </div>
                     <div class="modal-body">
-                        <input type="text" id="artist-input">
+                        <input type="text" class="text-center" id="artist-input">
                         <br>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-info" data-dismiss="modal" id="selectArtist">SoNgiFy Me!</button>
+                        <button type="button" class="btn btn-lg btn-info" data-dismiss="modal" id="selectArtist"><i class="fa fa-lg fa-music" aria-hidden="true"></i>Fetch My Songs</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
@@ -52,37 +56,42 @@
         <!--Gathering User Information -->
         <div class="row">
             <div class="col-xs-12">
-                <form class="form-inline">
+                <form>
                     <div class="form-group">
-                        <label for="start">Your starting location: </label>
-                        <input type="text" class="form-control" id="start" value="" placeholder="City,State/Complete Address">
+                        <label for="start">Your Starting Location: </label>
+                        <input type="text" class="form-control text-center" id="start" value="" placeholder="City,State/Complete Address">
                     </div>
                     <div class="form-group">
-                        <label for="end">Your awesome destination: </label>
-                        <input type="text" class="form-control" id="end" value="" placeholder="City,State/Complete Address">
+                        <label for="end">Your Desired Destination: </label>
+                        <input type="text" class="form-control text-center" id="end" value="" placeholder="City,State/Complete Address">
                     </div>
-                    <button class="btn btn-info submit" type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
+                    <button class="btn btn-lg btn-success submit" type="submit" name="action"><i class="fa fa-map-marker" aria-hidden="true"></i>Chart My Course</button>
                 </form>
-                <div class="weather">
-                    Weather currently in <span id="destination"></span>:
-                    <p id="temperature"></p>
-                    <div id="typeOfWeather"></div>
-                </div>
             </div>
         </div>
         <div class="panel-group" id="accordion">
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-        MAP</a>
-      </h4>
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-lg fa-map-o" aria-hidden="true"></i>MAP and WEATHER</a>
+        </h4>
                 </div>
                 <div id="collapse1" class="panel-collapse collapse in">
                     <div class="panel-body">
+                    <div class="col-xs-7">
                         <div id="map"></div>
+                    </div>
+                     <div class="col-xs-5">
+                         <div class="weather">
+                            <span>Weather currently in <span id="destination"></span></span>
+                            <div class="weatherStats">
+                                Max. Temperature: <p id="temperatureMax"></p>
+                                Min. Temperature: <p id="temperatureMin"></p>
+                                Weather conditions: <div id="typeOfWeather"></div>
+                                Humidity: <div id="humidity"></div>
+                            </div>
+                        </div>
+                     </div>
                     </div>
                 </div>
             </div>
@@ -90,7 +99,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-        DIRECTIONS</a>
+        <i class="fa fa-lg fa-road" aria-hidden="true"></i>DIRECTIONS</a>
       </h4>
                 </div>
                 <div id="collapse2" class="panel-collapse collapse">
@@ -102,8 +111,7 @@
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-        TRACKLIST <p id="playlistlength"> TOTAL LENGTH: </p></a>
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3"><i class="fa fa-lg fa-music" aria-hidden="true"></i>TRACKLIST <p id="playlistlength"> TOTAL LENGTH: </p></a>
                     </h4>
                 </div>
                 <div id="collapse3" class="panel-collapse collapse">

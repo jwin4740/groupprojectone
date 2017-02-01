@@ -33,10 +33,14 @@ html {
         width: 500px;
         height: 60%;
         margin: 0 auto;
+        background-color: rgba(255,255,255,0.8);
+        font-size: 20px;
+        font-weight: 400;   
     }
     
     .submit {
-        margin-bottom: 12px;
+        margin-bottom: 20px;
+
     }
     
     #tracklistcontainer {
@@ -51,10 +55,20 @@ html {
     #tracklist {
         font-size: 25px;
         padding: 5px;
+        text-align: left;
+    }
+
+    #tracklist> p{
+        padding: 3px;
     }
     
     h4 {
         margin: 0px;
+    }
+
+    h3 {
+        margin-top: 10px;
+        margin-bottom: 15px;
     }
     
     .displaytrack {
@@ -72,12 +86,44 @@ html {
     #artist-input {
         width: 80%;
         height: 40px;
+        font-size: 20px;
     }
 
     #start, #end {
-
-       /*background-color: rgba(255,255,255,50.); */
        border: white !important;
        color: white;
+       width: 60%;
+       margin: 0 auto;
+       height: 40px;
+       font-size: 20px;
+       color: black;
+    }
+
+    label {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    i {
+        margin-right: 10px;
+    }
+
+    .weather {
+        font-size: 20px;
         
+    }
+
+    .weatherStats {
+        border: 2px solid white;
+        min-height: 200px;
+        width: 80%;
+        padding: 10px;
+    }
+
+    .weather>span {
+        margin-left: -100px;
+    }
+
+    #playlistlength {
+        margin: 3px;
     }

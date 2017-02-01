@@ -120,6 +120,8 @@ $('#selectArtist').on('click', function() {
     var artist = $('#artist-input').val().trim();
     // Run the Artist Player Function (Passing in the Artist as an Argument)
     getArtistTrack(artist);
+    // Letting user know
+    $("#artist-input").val("You have been SoNgIfIeD!! Enjoy!");
     // Prevents moving to the next page
     return false;
 });
@@ -212,12 +214,6 @@ function playlistShuffle() {
     }
 } // End of shuffling function
 
-
-// Have -> Tracklist
-
-// Need to get -> songs playing on it's own from tracklist.
-// child.remove() listtoLast(1), 
-
 // Function to display iFrames for each track in tracklist, and display tracklist
 function beginSpotifyPlaying() {
     // do...while loop inserts iframes into DOM until the tracklist equals the trip duration
@@ -269,14 +265,14 @@ function beginSpotifyPlaying() {
             numSeconds = "00";
         }
         // Appending each track number, name, and duration to tracklist div
-        $("#tracklist").append("<p class='displaytrack' data-value='" + j + "'>" + (j + 1) + ") " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + " (" + numMinutes + ":" + numSeconds + ")</span></p>");
+        $("#tracklist").append("<p class='displaytrack' data-value='" + j + "'><i class='fa fa-play-circle-o' aria-hidden='true'></i>" + (j + 1) + ". " + myTrackDataArray[j].artist + ": <span>" + myTrackDataArray[j].songtitle + " (" + numMinutes + ":" + numSeconds + ")</span></p><hr>");
         // Incrementing iterator
         j++;
 
     } while (songLengthTotal < tripLength);
 
     // Trip length
-    $("#playlistlength").append((songLengthTotal / 1000) + " seconds");
+    $("#playlistlength").append(moment((songLengthTotal / 1000),'ss').format("hh:mm:ss"));
     // Playing each track on click of displayed track in tracklist
     $("#tracklist").on("click", ".displaytrack", function() {
         trackdatavalue = $(this).attr("data-value");
@@ -304,8 +300,10 @@ function getCurrentWeather() {
         console.log(response);
 
         $("#destination").html(endValue.toUpperCase());
-        $("#temperature").html("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'> " + Math.round((response.main.temp - 273.15) * 1.80 + 32) + " F");
-        $("#typeOfWeather").html(response.weather[0].description);
+        $("#temperatureMax").html(Math.round((response.main.temp_max - 273.15) * 1.80 + 32) + " F");
+        $("#temperatureMin").html(Math.round((response.main.temp_min - 273.15) * 1.80 + 32) + " F");
+        $("#humidity").html(response.main.humidity);
+        $("#typeOfWeather").html("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'> " + response.weather[0].description);
 
     });
 
