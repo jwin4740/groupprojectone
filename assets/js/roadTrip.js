@@ -1,10 +1,21 @@
-var config = {
-    apiKey: "AIzaSyAXt8VC_K0qy0I1esj1Fvg96bZo856bakQ",
-    authDomain: "roadtripapp-a18f6.firebaseapp.com",
-    databaseURL: "https://roadtripapp-a18f6.firebaseio.com",
-    storageBucket: "roadtripapp-a18f6.appspot.com",
-    messagingSenderId: "125448158208"
-};
+// AKhilas firebase
+
+// var config = {
+//     apiKey: "AIzaSyAXt8VC_K0qy0I1esj1Fvg96bZo856bakQ",
+        // authDomain: "roadtripapp-a18f6.firebaseapp.com",
+        // databaseURL: "https://roadtripapp-a18f6.firebaseio.com",
+        // storageBucket: "roadtripapp-a18f6.appspot.com",
+        // messagingSenderId: "125448158208"
+// };
+
+// James firebase
+  var config = {
+    apiKey: "AIzaSyBx2ZLAG5Y6NcPYpSIY-0HSLU5hUrrQ2Ww",
+    authDomain: "roadtripgmap.firebaseapp.com",
+    databaseURL: "https://roadtripgmap.firebaseio.com",
+    storageBucket: "roadtripgmap.appspot.com",
+    messagingSenderId: "787842381953"
+  };
 
 firebase.initializeApp(config);
 
@@ -23,6 +34,12 @@ var trackURI = "";
 var numberOfArtists = 0;
 var totalNumberOfTimes = 0;
 var numberOfTracksPerArtist = 0;
+var songLengthSec = 0;
+var songLengthMin = 0;
+var songLengthHour = 0;
+var firstLoginCount = 0;
+var loginCount;
+
 // array to store uri to fetch each song from spotify
 var myTrackDataArray = [];
 var j = 0;
@@ -182,8 +199,7 @@ function getArtistTrack(artist) {
                     url: "https://api.spotify.com/v1/artists/" + artists[i] + "/top-tracks?country=SE",
                     method: "GET"
                 }).done(function(response) {
-                    console.log(response);
-                    console.log(artists.length);
+
                     /// WHEN DONE, LOOP THROUGH 'track[]' ARRAY TO GET EACH 'track' AND PUSH TO 'listOfTracks[]'
                     for (var i = 0; i < response.tracks.length; i++) {
                         listOfTracks.push(response.tracks[i]);
@@ -199,7 +215,7 @@ function getArtistTrack(artist) {
 // Function that checks if ajax calls are complete
 function checkIfDone() {
     --totalNumberOfTimes;
-    console.log(totalNumberOfTimes);
+
     if (totalNumberOfTimes == 0) {
         // console.log(listOfTracks);
         // console.log(listOfTracks[0].uri);
@@ -288,7 +304,25 @@ function beginSpotifyPlaying() {
     } while (songLengthTotal < tripLength);
 
     // Trip length
-    $("#playlistlength").append(moment((songLengthTotal / 1000),'ss').format("hh:mm:ss"));
+    songLengthTotal = Math.floor((songLengthTotal / 1000)); // songlength in seconds
+    songLengthSec = songLengthTotal;
+    if (songLengthSec > 3599) {
+        do {
+
+            songLengthSec = songLengthSec - 3600;
+            songLengthHour++;
+        }
+        while (songLengthSec > 3599);
+    }
+    do {
+
+        songLengthSec = songLengthSec - 60;
+        songLengthMin++;
+    }
+    while (songLengthSec > 59);
+
+    console.log(songLengthTotal);
+    $("#playlistlength").append("( " + songLengthHour + "hrs " + songLengthMin + "mins " + songLengthSec + "secs)");
     // Playing each track on click of displayed track in tracklist
     $("#tracklist").on("click", ".displaytrack", function() {
         trackdatavalue = $(this).attr("data-value");
@@ -326,10 +360,21 @@ function getCurrentWeather() {
 }
 
 
-// PseudoCode ->
-// Pushed tracks in firebase db /tracklist
-// database.ref("/tracklist").limitToFirst(1).on("value").
-// loop through myTrackDataArray[]
-// get uri from db track -> display as iframe
+// pushes a count to firebase each time someone logs into out app
+database.ref("/logins").set({
+    views : firstLoginCount
+});
+database.ref("/logins").once("value", function(snapshot) {
+    loginCount = parseInt(snapshot.val().views);
+    console.log(loginCount);
+    updateLoginCount(loginCount);
 
-// database.ref("/tracklist")
+});
+
+function updateLoginCount(loginCount) {
+    loginCount++;
+    console.log(loginCount);
+    database.ref("/logins").set({
+        views: loginCount
+    });
+}
