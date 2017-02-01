@@ -102,6 +102,7 @@ $(".submit").on("click", function(e) {
     $("#right-panel").empty();
     initMap();
     $("form").hide();
+    $("h3").hide();
 });
 
 $('#myModal').on('shown.bs.modal', function() {
