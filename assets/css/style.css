@@ -4,7 +4,11 @@ html {
     }
     
     body {
-        background-color: #1DB954;
+       background: black url("../images/bg.jpg") no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: 100% 100%;
         color: white;
     }
     
@@ -17,6 +21,11 @@ html {
         position: absolute !important;
         /*        add left margin
 */
+    }
+
+    label {
+        font-size: 25px;
+        margin-left: 20px;
     }
     
     #right-panel {
@@ -31,7 +40,7 @@ html {
     
     .submit {
         margin-bottom: 12px;
-        background-color: #FAFFBD;
+        /*background-color: #FAFFBD;*/
     }
     
     #tracklistcontainer {
