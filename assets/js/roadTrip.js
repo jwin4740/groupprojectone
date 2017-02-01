@@ -29,6 +29,8 @@ var j = 0;
 var tripLength = 0; // in milliseconds this is a 1 hour trip
 var songLengthTotal = 0;
 
+$("#accordion").collapse("hide");
+
 // ******** Google maps API code ********
 // Google maps function to get map and calls directionDisplay
 function initMap() {
@@ -83,7 +85,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, distance
 
         tripLength = length * 1000;
         console.log(response.rows[0].elements[0].duration.text);
-        console.log(msLength);
+        // console.log(msLength);
 
     });
     // Get current weather there
@@ -92,10 +94,14 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, distance
 
 // Main Submit button get route info & modal button
 $(".submit").on("click", function(e) {
-    $('#myModal').modal('show')
+    if (($("#start").val().trim() === "") || ($("#end").val().trim() === "")) {
+        return;
+    }
+    $('#myModal').modal('show');
     e.preventDefault();
     $("#right-panel").empty();
     initMap();
+    $("form").hide();
 });
 
 $('#myModal').on('shown.bs.modal', function() {
@@ -107,6 +113,9 @@ $('#myModal').on('shown.bs.modal', function() {
 
 // On Button Click for Artist Selection
 $('#selectArtist').on('click', function() {
+    if ($("#artist-input").val().trim() === "") {
+        return;
+    }
     // Grab the Artist Name
     var artist = $('#artist-input').val().trim();
     // Run the Artist Player Function (Passing in the Artist as an Argument)
@@ -285,19 +294,19 @@ function beginSpotifyPlaying() {
 
 // To collect weather data
 function getCurrentWeather() {
-    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q="+endValue+"&APPID=51d5a2e80db66d661e97694890b4fb97";
+    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + endValue + "&APPID=51d5a2e80db66d661e97694890b4fb97";
 
     $.ajax({
-    url: queryURL,
-    method: 'GET'
-    }).done(function(response){
+        url: queryURL,
+        method: 'GET'
+    }).done(function(response) {
         console.log(queryURL);
         console.log(response);
 
         $("#destination").html(endValue.toUpperCase());
-        $("#temperature").html("<img src='http://openweathermap.org/img/w/"+ response.weather[0].icon+".png'> "  + Math.round((response.main.temp - 273.15) * 1.80 + 32) + " F");
+        $("#temperature").html("<img src='http://openweathermap.org/img/w/" + response.weather[0].icon + ".png'> " + Math.round((response.main.temp - 273.15) * 1.80 + 32) + " F");
         $("#typeOfWeather").html(response.weather[0].description);
-        
+
     });
 
 }

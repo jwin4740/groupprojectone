@@ -12,16 +12,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- Firebase link -->
     <script src="https://www.gstatic.com/firebasejs/3.6.7/firebase.js"></script>
-    <!-- Materialize CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
-    <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
-    <!--Import Google Icon Font-->
-      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <!--Import materialize.css-->
-      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-
-     <!-- CSS file link -->
+    <!-- CSS file link -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 
@@ -53,75 +44,84 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="header">
-                    <h3>The Official Road Trip App</h3>
-                    <h5>Enter your destination, and choose your favorite artist for some music on the road!!</h5>
+                    <h1>The Official Road Trip App</h1>
+                    <h3>Enter your destination, and choose your favorite artist for some music on the road!!</h3>
                 </div>
             </div>
         </div>
         <!--Gathering User Information -->
         <div class="row">
-
-             <form class="col s12">
-              <div class="row">
-                <div class="input-field col s4">
-                 <input type="text" class="validate" id="starting-place" >
-                    <label for="starting-place">Your starting location: </label>
-                </div>
-                <div class="input-field col s4 col-offset-s4">
-                   <input type="text" class="validate" id="ending-place" >
-                  <label for="ending-place">Your awesome destination: </label>
-                </div>
-              </div>
-            </form>
-
-
-
-
             <div class="col-xs-12">
-                 <form class="form-inline">
-                <div class="form-group">
-                    <label for="starting-place">Your starting location: </label>
-                    <input type="text" class="form-control" id="start" value="" placeholder="City,State/Complete Address">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="start">Your starting location: </label>
+                        <input type="text" class="form-control" id="start" value="" placeholder="City,State/Complete Address">
+                    </div>
+                    <div class="form-group">
+                        <label for="end">Your awesome destination: </label>
+                        <input type="text" class="form-control" id="end" value="" placeholder="City,State/Complete Address">
+                    </div>
+                    <button class="btn btn-info submit" type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </form>
+                <div class="weather">
+                    Weather currently in <span id="destination"></span>:
+                    <p id="temperature"></p>
+                    <div id="typeOfWeather"></div>
                 </div>
-                <div class="form-group">
-                    <label for="ending-place">Your awesome destination: </label>
-                    <input type="text" class="form-control" id="end" value="" placeholder="City,State/Complete Address">
-                </div>
-             <button class="btn waves-effect waves-light submit" type="submit" name="action">Submit
-    <i class="material-icons right">send</i>
-  </button>
-        </form>
             </div>
         </div>
-       
-        <div class="weather">
-            Weather currently in <span id="destination"></span>:
-            <p id="temperature"></p>
-            <div id="typeOfWeather"></div>
-        </div>
-        <div class="row">
-            <div id="tracklistcontainer" class="col-xs-4">
-                <h4> TRACKLIST </h4>
-                <div id="tracklist">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+        MAP</a>
+      </h4>
                 </div>
-                <h4 id="playlistlength"> TOTAL LENGTH: </h4>
+                <div id="collapse1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div id="map"></div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-4">
-                <div id="map"></div>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+        DIRECTIONS</a>
+      </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="right-panel"></div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-4">
-                <div id="right-panel"></div>
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+        TRACKLIST <p id="playlistlength"> TOTAL LENGTH: </p></a>
+                    </h4>
+                </div>
+                <div id="collapse3" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="tracklistcontainer">
+                            <div id="tracklist"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="nowplaying"></div>
-        <iframe src="" width="300" height="380" controls frameborder="0" allowtransparency="true"></iframe>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJBKqmHFJ_X-wOXl3UBg46WgUwqzGDEHY">
     </script>
     <script type="text/javascript" src="assets/js/roadTrip.js"></script>
-    <script src="roadTrip.js"></script>
 </body>
 
 </html>
