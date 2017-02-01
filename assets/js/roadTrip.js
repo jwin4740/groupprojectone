@@ -2,20 +2,20 @@
 
 // var config = {
 //     apiKey: "AIzaSyAXt8VC_K0qy0I1esj1Fvg96bZo856bakQ",
-        // authDomain: "roadtripapp-a18f6.firebaseapp.com",
-        // databaseURL: "https://roadtripapp-a18f6.firebaseio.com",
-        // storageBucket: "roadtripapp-a18f6.appspot.com",
-        // messagingSenderId: "125448158208"
+// authDomain: "roadtripapp-a18f6.firebaseapp.com",
+// databaseURL: "https://roadtripapp-a18f6.firebaseio.com",
+// storageBucket: "roadtripapp-a18f6.appspot.com",
+// messagingSenderId: "125448158208"
 // };
 
 // James firebase
-  var config = {
-    apiKey: "AIzaSyBx2ZLAG5Y6NcPYpSIY-0HSLU5hUrrQ2Ww",
-    authDomain: "roadtripgmap.firebaseapp.com",
-    databaseURL: "https://roadtripgmap.firebaseio.com",
-    storageBucket: "roadtripgmap.appspot.com",
-    messagingSenderId: "787842381953"
-  };
+var config = {
+    apiKey: "AIzaSyBTaP-0LgIFFa2gWd6hlKCr8cHEdoVK-2I",
+    authDomain: "therace-ec187.firebaseapp.com",
+    databaseURL: "https://therace-ec187.firebaseio.com",
+    storageBucket: "therace-ec187.appspot.com",
+    messagingSenderId: "490377130712"
+};
 
 firebase.initializeApp(config);
 
@@ -42,6 +42,9 @@ var firstLoginCount = 0;
 var loginCount;
 var trafficLayer;
 var map = "";
+var analytics = "";
+var analyticsArray = [];
+var artCountArray = [];
 
 // array to store uri to fetch each song from spotify
 var myTrackDataArray = [];
@@ -85,7 +88,7 @@ function initMap() {
 $('#toggletraffic').on("click", function() {
     trafficLayer.setMap(map);
 });
- 
+
 function displayDirectionsMap() {
     directionsDisplay.setMap(map);
 }
@@ -140,15 +143,6 @@ $('#myModal').on('shown.bs.modal', function() {
     $('#myInput').focus()
 })
 
-function pushToDBForAnalysis() {
-    analyticsData = {
-        artist: artist,
-        destination: endValue,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    }
-    // Pushing analyticsData to firebase as child of /analytics
-    database.ref().push(analyticsData);
-}
 
 
 // ********* Code for Spotify song playing ********
@@ -165,7 +159,6 @@ $('#selectArtist').on('click', function() {
     // Letting user know
     $("#artist-input").val("You have been SoNgIfIeD!! Enjoy!");
     // Function to push data for data analytics
-    pushToDBForAnalysis();
     // Prevents moving to the next page
     return false;
 });
@@ -176,6 +169,13 @@ function trackdata(uri, songtitle, artist, songlength) {
         this.songtitle = songtitle,
         this.artist = artist,
         this.songlength = songlength
+}
+
+// artist and count analytics
+function artcountconstruct(artist, artCount) {
+  
+        this.artist = artist,
+        this.artCount = artCount
 }
 
 // Function to get a list of tracks of favorite artist and related artists 
@@ -260,6 +260,8 @@ function playlistShuffle() {
 // Function to display iFrames for each track in tracklist, and display tracklist
 function beginSpotifyPlaying() {
     // do...while loop inserts iframes into DOM until the tracklist equals the trip duration
+
+    database.ref("/analyze").push(myTrackDataArray);
     do {
         // implement a conversion from seconds to minutes
         var numMinutes = 0;
@@ -372,9 +374,7 @@ function getCurrentWeather() {
 
 
 // pushes a count to firebase each time someone logs into out app
-database.ref("/logins").set({
-    views : firstLoginCount
-});
+
 database.ref("/logins").once("value", function(snapshot) {
     loginCount = parseInt(snapshot.val().views);
     console.log(loginCount);
@@ -388,4 +388,41 @@ function updateLoginCount(loginCount) {
     database.ref("/logins").set({
         views: loginCount
     });
+    $("#logins").html(loginCount);
+    $("#").html(loginCount);
+
 }
+var artCount = 0;
+database.ref("/analyze").on("child_added", function(childsnapshot) {
+
+    for (var i = 0; i < 200; i++) {
+        analyticsArray.push(childsnapshot.val()[i].artist);
+        console.log(analytics);
+    }
+    analyticsArray.sort();
+    console.log(analyticsArray);
+
+    for (var i = 0; i < 200; i++) {
+
+       var artCon = new artcountconstruct(analyticsArray[i], artCount)
+
+        for (var j = 0; j < analyticsArray.length; j++) {
+            if (analyticsArray[i] === analyticsArray[j]) {
+                artCon.artCount++;
+            }
+
+        }
+        artCountArray.push(artCon);
+        database.ref("/analyze/topartists").push({
+            artist : analyticsArray[i],
+            count : artCon.artCount
+
+
+        })
+        
+    }
+
+    console.log(artCountArray);
+   
+});
+
