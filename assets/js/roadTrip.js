@@ -54,8 +54,8 @@ var songLengthTotal = 0;
 // To store artist destination and timestamp for data analytics
 var analyticsData = {};
 
-// Trying to get the accordion to be collapsed on initial display ********** check this.
-$("#accordion").collapse("hide");
+// Getting accordion to be collapsed on initial display 
+$("#collapse1").removeClass("in");
 
 // ******** Google maps API code ********
 // Google maps function to get map and calls directionDisplay
@@ -64,6 +64,15 @@ function initMap() {
     directionsDisplay = new google.maps.DirectionsRenderer;
     distance = new google.maps.DistanceMatrixService;
     trafficLayer = new google.maps.TrafficLayer();
+    heatmapLayer = new google.maps.FusionTablesLayer({
+          query: {
+            select: 'location',
+            from: '1xWyeuAhIFK_aED1ikkQEGmR8mINSCJO9Vq-BPQ'
+          },
+          heatmap: {
+            enabled: true
+          }
+        })
     map = new google.maps.Map($('#map')[0], {
         zoom: 7,
         center: {
@@ -71,6 +80,10 @@ function initMap() {
             lng: -87.65
         }
     });
+
+       
+        heatmapLayer.setMap(map);
+      
     directionsDisplay.setMap(map);
     directionsDisplay.setPanel($('#right-panel')[0]);
     console.log($('#right-panel')[0]);
@@ -85,9 +98,28 @@ function initMap() {
 
 } // End of google map display
 
-$('#toggletraffic').on("click", function() {
+$('#toggleTraffic').on("click", function() {
     trafficLayer.setMap(map);
 });
+
+
+// $('.mapOptions').on("click", function() {
+//     if($(this).attr('id')=== "toggleTraffic"){
+
+//         trafficLayer.setMap($('#toggleHeatmap').checked ? map : null);
+//        // trafficLayer.setMap(map);
+
+//     }else if($(this).attr('id')=== "toggleHeatmap") {
+
+//     heatmapLayer.setMap($('#toggleHeatmap').checked ? map : null);    
+    
+//     }
+
+//    // if($('#toggleHeatmap').checked){
+
+//     // heatmapLayer.setMap($('#toggleHeatmap').checked ? map : null);
+
+// });
 
 function displayDirectionsMap() {
     directionsDisplay.setMap(map);
@@ -134,14 +166,16 @@ $(".submit").on("click", function(e) {
     $('#myModal').modal('show');
     e.preventDefault();
     $("#right-panel").empty();
+    $("#collapse1").addClass("in");
     initMap();
-    $("form").hide();
+    $("#locationInputForm").hide();
     $("h3").hide();
+
 });
 
 $('#myModal').on('shown.bs.modal', function() {
     $('#myInput').focus()
-})
+});
 
 
 
@@ -389,38 +423,39 @@ function updateLoginCount(loginCount) {
         views: loginCount
     });
     $("#logins").html(loginCount);
-    $("#yourTopArtists").html("Brad Paisley, Keith Urban, Chris Young, Miranda Lambert, Eric Elapton, Lynyrd Skynyrd");
+    
 
 }
-var artCount = 0;
-database.ref("/analyze").on("child_added", function(childsnapshot) {
+// var artCount = 0;
+// database.ref("/analyze").on("child_added", function(childsnapshot) {
 
-    for (var i = 0; i < 200; i++) {
-        analyticsArray.push(childsnapshot.val()[i].artist);
-        console.log(analytics);
-    }
-    analyticsArray.sort();
-    console.log(analyticsArray);
+//     for (var i = 0; i < 200; i++) {
+//         analyticsArray.push(childsnapshot.val()[i].artist);
+//         console.log(analytics);
+//     }
+//     analyticsArray.sort();
+//     console.log(analyticsArray);
 
-    for (var i = 0; i < 200; i++) {
+//     for (var i = 0; i < 200; i++) {
 
-       var artCon = new artcountconstruct(analyticsArray[i], artCount)
+//        var artCon = new artcountconstruct(analyticsArray[i], artCount)
 
-        for (var j = 0; j < analyticsArray.length; j++) {
-            if (analyticsArray[i] === analyticsArray[j]) {
-                artCon.artCount++;
-            }
+//         for (var j = 0; j < analyticsArray.length; j++) {
+//             if (analyticsArray[i] === analyticsArray[j]) {
+//                 artCon.artCount++;
+//             }
 
-        }
-        artCountArray.push(artCon);
-        database.ref("/analyze/topartists").push({
-            artist : analyticsArray[i],
-            count : artCon.artCount
-        })
+//         }
+//         artCountArray.push(artCon);
+//         database.ref("/analyze/topartists").push({
+//             artist : analyticsArray[i],
+//             count : artCon.artCount
+
+
+//         })
         
-    }
+//     }
 
-    console.log(artCountArray);
+//     console.log(artCountArray);
    
-});
-
+// });
