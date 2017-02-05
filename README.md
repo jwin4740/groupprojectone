@@ -9,9 +9,9 @@ Project Description :- Aptly named The Road Trip App, this web application provi
 Extensively used APIs :- 
 
 1. Google Maps API services 
-- a. Geocode API
-- b. Directions API
-- c. Distance Matrix API
+ 1.a. Geocode API
+ 1.b. Directions API
+ 1.c. Distance Matrix API
 
 2. Spotify API
 
