@@ -7,11 +7,14 @@ Group Members :- James Winkle, Akhila RK, Tre A-D, Benjamin (Patrick) Register
 Project Description :- Aptly named The Road Trip App, this web application provides the user, valuable information required to embark on a road-trip, namely Maps, Directions, Weather at the destination and some Music for the road.
 
 Extensively used APIs :- 
-1. Google Maps API services: 
+
+1. Google Maps API services 
 - a. Geocode API
 - b. Directions API
 - c. Distance Matrix API
+
 2. Spotify API
+
 3. Open Weather Map API
 
 Tech Used :-
